@@ -10,11 +10,15 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class MoviesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
+    
+    @IBOutlet weak var searchBar: UISearchBar!
     
     @IBOutlet weak var collectionView: UICollectionView!
 
     var movies: [NSDictionary]?
+    
+    var filteredMovies: [NSDictionary]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,11 +34,12 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         collectionView.insertSubview(refreshControl, at: 0)
         
         loadDataFromAPI()
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let movies = movies {
+        if let filteredMovies = filteredMovies {
+            return filteredMovies.count
+        } else if let movies = movies {
             return movies.count
         } else {
             return 0
@@ -44,7 +49,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "movie-cell", for: indexPath) as! MovieCell
         
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies![indexPath.row]
         let posterPath = movie["poster_path"] as! String
         
         let baseUrl = "https://image.tmdb.org/t/p/w342"
@@ -56,6 +61,9 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func loadDataFromAPI() {
+        
+        searchBar.text = ""
+        
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -69,6 +77,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
                 if let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
                     
                     self.movies = dataDictionary["results"] as? [NSDictionary]
+                    self.filteredMovies = self.movies
                     
                     self.collectionView.reloadData()
                     
@@ -85,6 +94,8 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     // Hides the RefreshControl
     func refreshControlAction(refreshControl: UIRefreshControl) {
         
+        searchBar.text = ""
+        
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -96,6 +107,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
                 if let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
                     
                     self.movies = dataDictionary["results"] as? [NSDictionary]
+                    self.filteredMovies = self.movies
                     
                     self.collectionView.reloadData()
                     
@@ -117,4 +129,31 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         return 8
     }
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredMovies = searchText.isEmpty ? movies : movies!.filter({(movie: NSDictionary) -> Bool in
+            // If dataItem matches the searchText, return true to include it
+            return (movie["title"] as! String).range(of: searchText, options: .caseInsensitive) != nil
+        })
+        
+        collectionView.reloadData()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        self.searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        self.filteredMovies = self.movies
+        self.collectionView.reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        searchBar.resignFirstResponder()
+    }
+    
 }
+
