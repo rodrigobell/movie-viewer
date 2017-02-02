@@ -11,9 +11,7 @@ import AFNetworking
 import MBProgressHUD
 
 class MoviesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
-    
-//    @IBOutlet weak var searchBar: UISearchBar!
-    
+        
     @IBOutlet weak var collectionView: UICollectionView!
     
     var searchBar = UISearchBar()
@@ -29,9 +27,11 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         collectionView.delegate = self
         searchBar.delegate = self
         
+        // Embed search bar in navigation controller
         searchBar.sizeToFit()
         searchBar.placeholder = "Search"
-        self.navigationItem.titleView = searchBar
+        searchBar.barStyle = UIBarStyle.black
+        self.navigationItem.titleView = self.searchBar
         
         // Initialize a UIRefreshControl
         let refreshControl = UIRefreshControl()
@@ -126,15 +126,11 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         task.resume()
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        
-        return 8
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        
-        return 1
-    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+//        
+//        return 8
+//    }
+
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         filteredMovies = searchText.isEmpty ? movies : movies!.filter({(movie: NSDictionary) -> Bool in
@@ -160,6 +156,16 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = false
         searchBar.resignFirstResponder()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let cell = sender as! UICollectionViewCell
+        let indexPath = collectionView.indexPathForItem(cell)
+        let movie = movies![indexPath!.row]
+        
+        let detailViewController = segue.destination as! DetailViewController
+        DetailViewController.movie = movie
+        
     }
     
 }
