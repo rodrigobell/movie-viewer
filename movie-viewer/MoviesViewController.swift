@@ -12,9 +12,11 @@ import MBProgressHUD
 
 class MoviesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
     
-    @IBOutlet weak var searchBar: UISearchBar!
+//    @IBOutlet weak var searchBar: UISearchBar!
     
     @IBOutlet weak var collectionView: UICollectionView!
+    
+    var searchBar = UISearchBar()
 
     var movies: [NSDictionary]?
     
@@ -25,6 +27,11 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        searchBar.delegate = self
+        
+        searchBar.sizeToFit()
+        searchBar.placeholder = "Search"
+        self.navigationItem.titleView = searchBar
         
         // Initialize a UIRefreshControl
         let refreshControl = UIRefreshControl()
@@ -121,12 +128,12 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         
-        return 1
+        return 8
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         
-        return 8
+        return 1
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
