@@ -17,8 +17,8 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     var searchBar = UISearchBar()
 
     var movies: [NSDictionary]?
-    
     var filteredMovies: [NSDictionary]?
+    var endpoint: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,12 +57,13 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "movie-cell", for: indexPath) as! MovieCell
         
         let movie = filteredMovies![indexPath.row]
-        let posterPath = movie["poster_path"] as! String
         
         let baseUrl = "https://image.tmdb.org/t/p/w342"
-        let imageUrl = NSURL(string: baseUrl + posterPath)
         
-        cell.posterView.setImageWith(imageUrl as! URL)
+        if let posterPath = movie["poster_path"] as? String {
+            let imageUrl = NSURL(string: baseUrl + posterPath)
+            cell.posterView.setImageWith(imageUrl as! URL)
+        }
         
         return cell
     }
@@ -72,7 +73,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         searchBar.text = ""
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")!
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
@@ -104,7 +105,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         searchBar.text = ""
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")!
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
@@ -125,12 +126,6 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         task.resume()
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        
-//        return 8
-//    }
-
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         filteredMovies = searchText.isEmpty ? movies : movies!.filter({(movie: NSDictionary) -> Bool in
@@ -160,11 +155,11 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let cell = sender as! UICollectionViewCell
-        let indexPath = collectionView.indexPathForItem(cell)
+        let indexPath = collectionView.indexPath(for: cell)
         let movie = movies![indexPath!.row]
         
         let detailViewController = segue.destination as! DetailViewController
-        DetailViewController.movie = movie
+        detailViewController.movie = movie
         
     }
     
