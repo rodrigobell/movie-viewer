@@ -27,11 +27,15 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         collectionView.delegate = self
         searchBar.delegate = self
         
+        UIApplication.shared.statusBarStyle = .lightContent
+        
         // Embed search bar in navigation controller
         searchBar.sizeToFit()
         searchBar.placeholder = "Search"
         searchBar.barStyle = UIBarStyle.black
         self.navigationItem.titleView = self.searchBar
+        let textFieldAppearance = UITextField.appearance()
+        textFieldAppearance.keyboardAppearance = .dark //.default//.light//.alert
         
         // Initialize a UIRefreshControl
         let refreshControl = UIRefreshControl()
@@ -88,7 +92,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
                     
                     self.movies = dataDictionary["results"] as? [NSDictionary]
                     self.filteredMovies = self.movies
-                    
+                                        
                     self.collectionView.reloadData()
                     
                     MBProgressHUD.hide(for: self.view, animated: true)

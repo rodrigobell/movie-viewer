@@ -39,6 +39,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
         
+        // Change color of navigation controller and tabs to black bg and white font
+        nowPlayingNavigationController.navigationBar.barTintColor = UIColor(red: 40.0/255.0, green: 40.0/255.0, blue: 40.0/255.0, alpha: 0.3)
+        nowPlayingNavigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        topRatedNavigationController.navigationBar.barTintColor = UIColor(red: 40.0/255.0, green: 40.0/255.0, blue: 40.0/255.0, alpha: 0.3)
+        topRatedNavigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        
+        tabBarController.tabBar.barTintColor = UIColor(red: 33.0/255.0, green: 33.0/255.0, blue: 33.0/255.0, alpha: 0.3)
+        tabBarController.tabBar.tintColor = UIColor.white
+        
         return true
     }
 
