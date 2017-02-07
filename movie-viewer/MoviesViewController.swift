@@ -19,6 +19,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     var movies: [NSDictionary]?
     var filteredMovies: [NSDictionary]?
     var endpoint: String!
+    var genreIds: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,9 +45,9 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         // Add refresh control to table view
         collectionView.insertSubview(refreshControl, at: 0)
         
-        
-        
+        MBProgressHUD.showAdded(to: self.view, animated: true)
         loadDataFromAPI()
+        MBProgressHUD.hide(for: self.view, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -75,16 +76,19 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func loadDataFromAPI() {
-        
-        searchBar.text = ""
-        
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")!
+        
+        var url: URL!
+        
+        if endpoint == "now_playing" {
+            url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")!
+        }
+        else if endpoint == "top_rated" {
+            url = URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&sort_by=vote_average.desc&vote_count.gte=100&with_genres=\(genreIds)")!
+        }
+        
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
-        
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
-        
-        MBProgressHUD.showAdded(to: self.view, animated: true)
         
         let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
             if let data = data {
@@ -94,43 +98,19 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
                     self.filteredMovies = self.movies
                                         
                     self.collectionView.reloadData()
-                    
-                    MBProgressHUD.hide(for: self.view, animated: true)
                 }
             }
         }
-        
         task.resume()
-    }
+            }
     
     // Makes a network request to get updated data
     // Updates the tableView with the new data
     // Hides the RefreshControl
     func refreshControlAction(refreshControl: UIRefreshControl) {
-        
         searchBar.text = ""
-        
-        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")!
-        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
-        
-        let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
-                
-        let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            if let data = data {
-                if let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
-                    
-                    self.movies = dataDictionary["results"] as? [NSDictionary]
-                    self.filteredMovies = self.movies
-                    
-                    self.collectionView.reloadData()
-                    
-                    refreshControl.endRefreshing()
-                }
-            }
-        }
-        
-        task.resume()
+        loadDataFromAPI()
+        refreshControl.endRefreshing()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -160,13 +140,14 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let cell = sender as! UICollectionViewCell
-        let indexPath = collectionView.indexPath(for: cell)
-        let movie = movies![indexPath!.row]
-        
-        let detailViewController = segue.destination as! DetailViewController
-        detailViewController.movie = movie
-        
+        if segue.identifier == "detailSegue" {
+            let cell = sender as! UICollectionViewCell
+            let indexPath = collectionView.indexPath(for: cell)
+            let movie = movies![indexPath!.row]
+            
+            let detailViewController = segue.destination as! DetailViewController
+            detailViewController.movie = movie
+        }
     }
     
 }
