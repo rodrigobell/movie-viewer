@@ -32,8 +32,6 @@ class DetailViewController: UIViewController {
         overviewLabel.text = overview
         overviewLabel.sizeToFit()
         
-        infoView.sizeToFit()
-        
         let baseUrl = "https://image.tmdb.org/t/p/w342"
         
         if let posterPath = movie["poster_path"] as? String {
@@ -47,15 +45,10 @@ class DetailViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    // Pass movie title to TrailerViewController to be used in YouTube's url search query
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let trailerViewController = segue.destination as! TrailerViewController
+        trailerViewController.movieTitle = titleLabel.text
     }
-    */
 
 }

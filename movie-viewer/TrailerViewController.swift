@@ -12,14 +12,18 @@ import WebKit
 class TrailerViewController: UIViewController {
     
     var webView: WKWebView!
+    
+    var movieTitle: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         webView = WKWebView(frame: CGRect(x: 0, y: 20, width: 750, height: 1334))
         view.addSubview(webView)
+        self.view.sendSubview(toBack: webView)
         
-        let url: URL = URL(string: "https://www.youtube.com/results?search_query=princess+mononoke")!
+        let titleString = movieTitle.replacingOccurrences(of: " ", with: "+", options: .literal, range: nil)
+        let url: URL = URL(string: "https://www.youtube.com/results?search_query=\(titleString)")!
         let req: URLRequest = URLRequest(url: url)
         webView.load(req)
     }
@@ -28,5 +32,10 @@ class TrailerViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    @IBAction func didTapDone(_ sender: Any) {
+        self.dismiss(animated: true, completion: {});
+    }
+    
     
 }
