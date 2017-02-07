@@ -40,6 +40,8 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         // Add refresh control to table view
         collectionView.insertSubview(refreshControl, at: 0)
         
+        
+        
         loadDataFromAPI()
     }
     

@@ -10,6 +10,7 @@ import UIKit
 
 class DetailViewController: UIViewController {
     
+    
     @IBOutlet weak var posterImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var overviewLabel: UILabel!
@@ -25,6 +26,7 @@ class DetailViewController: UIViewController {
         
         let title = movie["title"] as? String
         titleLabel.text = title
+        self.title = title
 
         let overview = movie["overview"] as? String
         overviewLabel.text = overview
