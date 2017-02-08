@@ -37,5 +37,4 @@ class TrailerViewController: UIViewController {
         self.dismiss(animated: true, completion: {});
     }
     
-    
 }

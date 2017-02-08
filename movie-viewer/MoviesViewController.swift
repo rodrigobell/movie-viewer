@@ -46,7 +46,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         collectionView.insertSubview(refreshControl, at: 0)
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        loadDataFromAPI()
+        loadMoviesFromAPI()
         MBProgressHUD.hide(for: self.view, animated: true)
     }
     
@@ -75,7 +75,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         return cell
     }
     
-    func loadDataFromAPI() {
+    func loadMoviesFromAPI() {
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         
         var url: URL!
@@ -96,20 +96,20 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
                     
                     self.movies = dataDictionary["results"] as? [NSDictionary]
                     self.filteredMovies = self.movies
-                                        
+                    
                     self.collectionView.reloadData()
                 }
             }
         }
         task.resume()
-            }
+    }
     
     // Makes a network request to get updated data
     // Updates the tableView with the new data
     // Hides the RefreshControl
     func refreshControlAction(refreshControl: UIRefreshControl) {
         searchBar.text = ""
-        loadDataFromAPI()
+        loadMoviesFromAPI()
         refreshControl.endRefreshing()
     }
     
