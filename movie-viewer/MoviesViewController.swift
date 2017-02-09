@@ -19,7 +19,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     var movies: [NSDictionary]?
     var filteredMovies: [NSDictionary]?
     var endpoint: String!
-    var genreIds: String = ""
+    var genreId: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +45,13 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         // Add refresh control to table view
         collectionView.insertSubview(refreshControl, at: 0)
         
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        loadMoviesFromAPI()
+        MBProgressHUD.hide(for: self.view, animated: true)
+    }
+    
+    // Used to update movies if genre filter was selected
+    override func viewDidAppear(_ animated: Bool) {
         MBProgressHUD.showAdded(to: self.view, animated: true)
         loadMoviesFromAPI()
         MBProgressHUD.hide(for: self.view, animated: true)
@@ -84,7 +91,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
             url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")!
         }
         else if endpoint == "top_rated" {
-            url = URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&sort_by=vote_average.desc&vote_count.gte=100&with_genres=\(genreIds)")!
+            url = URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&sort_by=vote_average.desc&vote_count.gte=100&with_genres=\(genreId)")!
         }
         
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -151,4 +158,3 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
 }
-

@@ -85,7 +85,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="filter-cell" id="Oyf-Yb-x9K">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="filter-cell" id="Oyf-Yb-x9K">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Oyf-Yb-x9K" id="CBx-oQ-cMl">
@@ -123,7 +123,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="620"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <view alpha="0.84999999999999998" contentMode="scaleToFill" misplaced="YES" id="4cj-SI-lNM" userLabel="Info View">
+                                    <view alpha="0.90000000000000002" contentMode="scaleToFill" misplaced="YES" id="4cj-SI-lNM" userLabel="Info View">
                                         <rect key="frame" x="0.0" y="490" width="375" height="247"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>

@@ -13,6 +13,7 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
     @IBOutlet weak var tableView: UITableView!
 
     var genres: [NSDictionary]?
+    var genreId: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +44,26 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
+            cell.accessoryType = .none
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
+            cell.accessoryType = .checkmark
+            
+            let selectedIndex = indexPath.row
+            if (selectedIndex == 0) {
+                self.genreId = ""
+            } else {
+                let g = genres?[selectedIndex]["id"]! as! Int
+                self.genreId = String(g)
+            }
+        }
+    }
 
     func loadGenresFromAPI() {
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
@@ -60,6 +81,12 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
 
                     self.genres = dataDictionary["genres"] as? [NSDictionary]
                     
+                    let anyGenre = [
+                        "id": "-1",
+                        "name": "Any"
+                    ]
+                    self.genres?.insert(anyGenre as NSDictionary, at: 0)
+                    
                     self.tableView.reloadData()
                 }
             }
@@ -68,10 +95,11 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
     }
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-//        if let controller = viewController as? MoviesViewController {
-//            genreIds = "16"
-//            controller.genreIds = genreIds
-//        }
+        if let vc = viewController as? MoviesViewController {
+            if let genreId = genreId {
+                vc.genreId = self.genreId!
+            }
+        }
     }
 
 }
