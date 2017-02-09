@@ -25,15 +25,21 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        if let genres = genres {
+            return genres.count
+        } else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "filter-cell", for: indexPath)
         
-        //        let genre = genres![indexPath.row]
+        let genre = genres?[indexPath.row]
         
-        cell.textLabel?.text = "row"
+        if let name = genre?["name"] as? String {
+            cell.textLabel?.text = name
+        }
         
         return cell
     }
@@ -51,7 +57,7 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
         let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
             if let data = data {
                 if let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
-                    
+
                     self.genres = dataDictionary["genres"] as? [NSDictionary]
                     
                     self.tableView.reloadData()
