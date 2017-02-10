@@ -15,7 +15,8 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet weak var collectionView: UICollectionView!
     
     var searchBar = UISearchBar()
-
+    @IBOutlet weak var filterButton: UIBarButtonItem!
+    
     var movies: [NSDictionary]?
     var filteredMovies: [NSDictionary]?
     var endpoint: String!

@@ -66,6 +66,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="dKK-M2-Avv" id="WKh-jr-KZw"/>
+                        <outlet property="filterButton" destination="soS-1f-gPP" id="uat-qP-qnp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -146,7 +147,9 @@
                                                 <rect key="frame" x="8" y="202" width="93" height="37"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                <state key="normal" title="Watch trailer"/>
+                                                <state key="normal" title="Watch trailer">
+                                                    <color key="titleColor" red="0.31273869390917858" green="0.52486010885191703" blue="0.70607998704663211" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
                                                 <connections>
                                                     <segue destination="Ml4-2O-Ee4" kind="modal" id="Vlu-V5-SuK"/>
                                                 </connections>
