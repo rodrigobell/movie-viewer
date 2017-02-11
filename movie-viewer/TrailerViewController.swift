@@ -18,7 +18,7 @@ class TrailerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        webView = WKWebView(frame: CGRect(x: 0, y: 20, width: 750, height: 1334))
+        webView = WKWebView(frame: CGRect(x: 0, y: 60, width: 750, height: 1334))
         view.addSubview(webView)
         self.view.sendSubview(toBack: webView)
         

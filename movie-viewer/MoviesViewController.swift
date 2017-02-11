@@ -68,25 +68,6 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         MBProgressHUD.hide(for: self.view, animated: true)
     }
     
-    // Used to update movies if genre filter was selected
-    override func viewDidAppear(_ animated: Bool) {
-        if genreId != -2 {
-            // Scroll view back to top and reload collection view so there's no indexing issues
-            collectionView.setContentOffset(CGPoint.init(x: 0, y: -60), animated: true)
-            collectionView.reloadData()
-            
-            // Reset existing movie data
-            self.movies = []
-            self.filteredMovies = movies
-            self.numPages = 1
-            
-            // Load new movies given selected genre
-            MBProgressHUD.showAdded(to: self.view, animated: true)
-            loadMoviesFromAPI()
-            MBProgressHUD.hide(for: self.view, animated: true)
-        }
-    }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let filteredMovies = filteredMovies {
             return filteredMovies.count
@@ -147,6 +128,22 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
             }
         }
         task.resume()
+    }
+    
+    func loadNewMoviesByGenre() {
+        // Scroll view back to top and reload collection view so there's no indexing issues
+        collectionView.setContentOffset(CGPoint.init(x: 0, y: -60), animated: true)
+        collectionView.reloadData()
+        
+        // Reset existing movie data
+        self.movies = []
+        self.filteredMovies = movies
+        self.numPages = 1
+        
+        // Load new movies given selected genre
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        loadMoviesFromAPI()
+        MBProgressHUD.hide(for: self.view, animated: true)
     }
     
     // Makes a network request to get updated data

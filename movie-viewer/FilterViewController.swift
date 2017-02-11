@@ -24,6 +24,8 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
         tableView.delegate = self
         tableView.dataSource = self
         
+        self.genreId = self.userDefaults.integer(forKey: "genreId")
+        
         loadGenresFromAPI()
     }
     
@@ -118,7 +120,10 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if let vc = viewController as? MoviesViewController {
-            vc.genreId = self.genreId
+            if (vc.genreId != self.genreId) {
+                vc.genreId = self.genreId
+                vc.loadNewMoviesByGenre()
+            }
         }
     }
 
