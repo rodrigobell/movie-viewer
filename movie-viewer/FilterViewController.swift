@@ -54,11 +54,15 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
             cell.accessoryType = .checkmark
-            
+                        
             let selectedIndex = indexPath.row
             if (selectedIndex == 0) {
                 self.genreId = ""
             } else {
+                let indexPath = NSIndexPath(row: 0, section: 0)
+                let allCell = tableView.cellForRow(at: indexPath as IndexPath)
+                allCell?.accessoryType = .none
+                
                 let g = genres?[selectedIndex]["id"]! as! Int
                 self.genreId = String(g)
             }
@@ -88,6 +92,10 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
                     self.genres?.insert(anyGenre as NSDictionary, at: 0)
                     
                     self.tableView.reloadData()
+                    
+                    let indexPath = NSIndexPath(row: 0, section: 0)
+                    let allCell = self.tableView.cellForRow(at: indexPath as IndexPath)
+                    allCell?.accessoryType = .checkmark
                 }
             }
         }

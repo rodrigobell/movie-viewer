@@ -148,7 +148,7 @@
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <state key="normal" title="Watch trailer">
-                                                    <color key="titleColor" red="0.31273869390917858" green="0.52486010885191703" blue="0.70607998704663211" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="titleColor" red="0.84451910621761661" green="0.50024229492054983" blue="0.56276979811967864" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                                 <connections>
                                                     <segue destination="Ml4-2O-Ee4" kind="modal" id="Vlu-V5-SuK"/>

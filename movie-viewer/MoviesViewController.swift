@@ -17,10 +17,16 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     var searchBar = UISearchBar()
     @IBOutlet weak var filterButton: UIBarButtonItem!
     
-    var movies: [NSDictionary]?
+    var movies: [NSDictionary] = []
     var filteredMovies: [NSDictionary]?
     var endpoint: String!
     var genreId: String = ""
+    
+    let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
+    var numPages = 1
+    
+    var isMoreDataLoading = false
+    var loadingMoreView: ProgressIndicator?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +52,16 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         // Add refresh control to table view
         collectionView.insertSubview(refreshControl, at: 0)
         
+        // Set up Infinite Scroll loading indicator
+        let frame = CGRect(x: 0, y: collectionView.contentSize.height, width: collectionView.bounds.size.width, height: ProgressIndicator.defaultHeight)
+        loadingMoreView = ProgressIndicator(frame: frame)
+        loadingMoreView!.isHidden = true
+        collectionView.addSubview(loadingMoreView!)
+        
+        var insets = collectionView.contentInset;
+        insets.bottom += ProgressIndicator.defaultHeight;
+        collectionView.contentInset = insets
+        
         MBProgressHUD.showAdded(to: self.view, animated: true)
         loadMoviesFromAPI()
         MBProgressHUD.hide(for: self.view, animated: true)
@@ -61,10 +77,8 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let filteredMovies = filteredMovies {
             return filteredMovies.count
-        } else if let movies = movies {
-            return movies.count
         } else {
-            return 0
+            return movies.count
         }
     }
     
@@ -84,15 +98,15 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func loadMoviesFromAPI() {
-        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
+        let numPagesString = String(self.numPages)
         
         var url: URL!
         
         if endpoint == "now_playing" {
-            url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")!
+            url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)&page=\(numPagesString)")!
         }
         else if endpoint == "top_rated" {
-            url = URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&sort_by=vote_average.desc&vote_count.gte=100&with_genres=\(genreId)")!
+            url = URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&sort_by=vote_average.desc&vote_count.gte=100&with_genres=\(genreId)&page=\(numPagesString)")!
         }
         
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -102,10 +116,15 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
             if let data = data {
                 if let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
                     
-                    self.movies = dataDictionary["results"] as? [NSDictionary]
+                    self.movies.append(contentsOf: dataDictionary["results"] as! [NSDictionary])
                     self.filteredMovies = self.movies
                     
                     self.collectionView.reloadData()
+                    
+                    // Stop the loading indicator
+                    self.loadingMoreView!.stopAnimating()
+                    
+                    self.isMoreDataLoading = false
                 }
             }
         }
@@ -121,8 +140,30 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         refreshControl.endRefreshing()
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (!isMoreDataLoading) {
+            // Calculate the position of one screen length before the bottom of the results
+            let scrollViewContentHeight = collectionView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - collectionView.bounds.size.height
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && collectionView.isDragging) {
+                self.numPages += 1
+                isMoreDataLoading = true
+                
+                // Update position of loadingMoreView, and start loading indicator
+                let frame = CGRect(x: 0, y: collectionView.contentSize.height, width: collectionView.bounds.size.width, height: ProgressIndicator.defaultHeight)
+                loadingMoreView?.frame = frame
+                loadingMoreView!.startAnimating()
+                
+                // ... Code to load more results ...
+                loadMoviesFromAPI()
+            }
+        }
+    }
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredMovies = searchText.isEmpty ? movies : movies!.filter({(movie: NSDictionary) -> Bool in
+        filteredMovies = searchText.isEmpty ? movies : movies.filter({(movie: NSDictionary) -> Bool in
             // If dataItem matches the searchText, return true to include it
             return (movie["title"] as! String).range(of: searchText, options: .caseInsensitive) != nil
         })
@@ -151,7 +192,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         if segue.identifier == "detailSegue" {
             let cell = sender as! UICollectionViewCell
             let indexPath = collectionView.indexPath(for: cell)
-            let movie = movies![indexPath!.row]
+            let movie = movies[indexPath!.row]
             
             let detailViewController = segue.destination as! DetailViewController
             detailViewController.movie = movie
