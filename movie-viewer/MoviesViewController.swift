@@ -49,7 +49,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshControlAction(refreshControl:)), for: UIControlEvents.valueChanged)
         
-        // Add refresh control to table view
+        // Add refresh control to collection view
         collectionView.insertSubview(refreshControl, at: 0)
         
         // Set up Infinite Scroll loading indicator
@@ -62,6 +62,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         insets.bottom += ProgressIndicator.defaultHeight;
         collectionView.contentInset = insets
         
+        // Load initial set of movies
         MBProgressHUD.showAdded(to: self.view, animated: true)
         loadMoviesFromAPI()
         MBProgressHUD.hide(for: self.view, animated: true)
@@ -69,9 +70,21 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     // Used to update movies if genre filter was selected
     override func viewDidAppear(_ animated: Bool) {
-        MBProgressHUD.showAdded(to: self.view, animated: true)
-        loadMoviesFromAPI()
-        MBProgressHUD.hide(for: self.view, animated: true)
+        if genreId != "" {
+            // Scroll view back to top and reload collection view so there's no indexing issues
+            collectionView.setContentOffset(CGPoint.init(x: 0, y: -60), animated: true)
+            collectionView.reloadData()
+            
+            // Reset existing movie data
+            self.movies = []
+            self.filteredMovies = movies
+            self.numPages = 1
+            
+            // Load new movies given selected genre
+            MBProgressHUD.showAdded(to: self.view, animated: true)
+            loadMoviesFromAPI()
+            MBProgressHUD.hide(for: self.view, animated: true)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
