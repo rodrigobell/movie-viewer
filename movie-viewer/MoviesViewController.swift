@@ -20,7 +20,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     var movies: [NSDictionary] = []
     var filteredMovies: [NSDictionary]?
     var endpoint: String!
-    var genreId: String = ""
+    var genreId: Int = -1
     
     let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
     var numPages = 1
@@ -70,7 +70,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     // Used to update movies if genre filter was selected
     override func viewDidAppear(_ animated: Bool) {
-        if genreId != "" {
+        if genreId != -2 {
             // Scroll view back to top and reload collection view so there's no indexing issues
             collectionView.setContentOffset(CGPoint.init(x: 0, y: -60), animated: true)
             collectionView.reloadData()
@@ -119,7 +119,12 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
             url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)&page=\(numPagesString)")!
         }
         else if endpoint == "top_rated" {
-            url = URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&sort_by=vote_average.desc&vote_count.gte=100&with_genres=\(genreId)&page=\(numPagesString)")!
+            var idString = ""
+            if (genreId != -1) {
+                idString = String(genreId)
+            }
+            
+            url = URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&sort_by=vote_average.desc&vote_count.gte=100&with_genres=\(idString)&page=\(numPagesString)")!
         }
         
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)

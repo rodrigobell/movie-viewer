@@ -11,9 +11,11 @@ import UIKit
 class FilterViewController: UIViewController, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
+    
+    let userDefaults = UserDefaults.standard
 
     var genres: [NSDictionary]?
-    var genreId: String?
+    var genreId: Int = -1
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,16 +58,26 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
             cell.accessoryType = .checkmark
                         
             let selectedIndex = indexPath.row
-            if (selectedIndex == 0) {
-                self.genreId = ""
-            } else {
+            
+            // Uncheck previous genre selection if new genre was selected
+            let prevIndex = self.userDefaults.integer(forKey: "genreIndex")
+            if (selectedIndex != prevIndex) {
+                let prevPath = NSIndexPath(row: prevIndex, section: 0)
+                let prevCell = tableView.cellForRow(at: prevPath as IndexPath)
+                prevCell?.accessoryType = .none
+            }
+            
+            
+            userDefaults.set(selectedIndex, forKey: "genreIndex")
+            
+            if (selectedIndex != 0) {
                 let indexPath = NSIndexPath(row: 0, section: 0)
                 let allCell = tableView.cellForRow(at: indexPath as IndexPath)
                 allCell?.accessoryType = .none
-                
-                let g = genres?[selectedIndex]["id"]! as! Int
-                self.genreId = String(g)
             }
+            
+            self.genreId = genres?[selectedIndex]["id"]! as! Int
+            userDefaults.set(genreId, forKey: "genreId")
         }
     }
 
@@ -85,15 +97,17 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
 
                     self.genres = dataDictionary["genres"] as? [NSDictionary]
                     
-                    let anyGenre = [
-                        "id": "-1",
+                    // Add any category to include all genres
+                    let anyGenre: NSDictionary = [
+                        "id": -1,
                         "name": "Any"
                     ]
                     self.genres?.insert(anyGenre as NSDictionary, at: 0)
                     
                     self.tableView.reloadData()
                     
-                    let indexPath = NSIndexPath(row: 0, section: 0)
+                    let genreIndex = self.userDefaults.integer(forKey: "genreIndex")
+                    let indexPath = NSIndexPath(row: genreIndex, section: 0)
                     let allCell = self.tableView.cellForRow(at: indexPath as IndexPath)
                     allCell?.accessoryType = .checkmark
                 }
@@ -104,9 +118,7 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if let vc = viewController as? MoviesViewController {
-            if let genreId = genreId {
-                vc.genreId = self.genreId!
-            }
+            vc.genreId = self.genreId
         }
     }
 
