@@ -62,7 +62,7 @@ Describe any challenges encountered while building the app.
 
 movie-viewer is a movies app displaying box office and top rental DVDs using [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **X** hours spent in total
+Time spent: 15 hours spent in total
 
 ## User Stories
 
@@ -80,12 +80,14 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 - [x] User can view movie trailers.
-- [ ] User can filter top rated films by genre.
+- [x] User can filter top rated films by genre.
+- [x] Infinite scrolling.
+- [x] Customize the UI.
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1. 
-2. 
+1. Filter table view cells strange behavior where accessoryType checkmark gets toggled randomly as you scroll throught the table view.
+2. Infinite scrolling progress animation not working.
 
 ## Video Walkthrough 
 

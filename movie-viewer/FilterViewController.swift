@@ -10,9 +10,9 @@ import UIKit
 
 class FilterViewController: UIViewController, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
     
-    @IBOutlet weak var tableView: UITableView!
-    
     let userDefaults = UserDefaults.standard
+    
+    @IBOutlet weak var tableView: UITableView!
 
     var genres: [NSDictionary]?
     var genreId: Int = -1
@@ -81,6 +81,7 @@ class FilterViewController: UIViewController, UINavigationControllerDelegate, UI
             self.genreId = genres?[selectedIndex]["id"]! as! Int
             userDefaults.set(genreId, forKey: "genreId")
         }
+        self.tableView.reloadData()
     }
 
     func loadGenresFromAPI() {

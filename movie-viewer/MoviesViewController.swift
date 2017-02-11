@@ -11,6 +11,8 @@ import AFNetworking
 import MBProgressHUD
 
 class MoviesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
+    
+    let userDefaults = UserDefaults.standard
         
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -63,6 +65,7 @@ class MoviesViewController: UIViewController, UICollectionViewDataSource, UIColl
         collectionView.contentInset = insets
         
         // Load initial set of movies
+        self.genreId = self.userDefaults.integer(forKey: "genreId")
         MBProgressHUD.showAdded(to: self.view, animated: true)
         loadMoviesFromAPI()
         MBProgressHUD.hide(for: self.view, animated: true)
