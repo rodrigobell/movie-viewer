@@ -79,13 +79,18 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-- [x] User can view movie trailers.
+- [x] User can view movie trailers from Movie Details screen to a Web View that pulls up the Youtube page with a search query of the selected movie.
 - [x] User can filter top rated films by genre.
     - [x] Selected genre is persisted using User Defaults.
     - [x] Table view cells update a to checkmark when selected.
     - [x] Scroll view scrolls back to top when genre is changed.
 - [x] Infinite scrolling.
 - [x] Customize the UI.
+    - [x] Implemented search bar in navigation bar.
+    - [x] Customized spacing between cells in collection view.
+    - [x] Scroll effect in Movies Details screen with fixed poster background.
+    - [x] Trailers screen UI matches that of rest of app.
+    - [x] Added tab bar icons.
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
