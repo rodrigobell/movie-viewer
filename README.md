@@ -81,6 +81,9 @@ The following **additional** features are implemented:
 
 - [x] User can view movie trailers.
 - [x] User can filter top rated films by genre.
+    - [x] Selected genre is persisted using User Defaults.
+    - [x] Table view cells update a to checkmark when selected.
+    - [x] Scroll view scrolls back to top when genre is changed.
 - [x] Infinite scrolling.
 - [x] Customize the UI.
 
